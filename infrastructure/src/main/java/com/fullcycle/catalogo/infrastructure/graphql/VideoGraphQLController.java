@@ -1,10 +1,11 @@
 package com.fullcycle.catalogo.infrastructure.graphql;
 
-import com.fullcycle.catalogo.application.category.list.ListCategoryOutput;
+import com.fullcycle.catalogo.application.castmember.get.GetCastMemberById;
+import com.fullcycle.catalogo.application.category.get.GetCategoryById;
+import com.fullcycle.catalogo.application.genre.get.GetGenreById;
 import com.fullcycle.catalogo.application.video.get.GetVideoUseCase;
 import com.fullcycle.catalogo.application.video.list.ListVideoUseCase;
 import com.fullcycle.catalogo.application.video.save.SaveVideoUseCase;
-import com.fullcycle.catalogo.domain.category.CategoryGateway;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.graphql.data.method.annotation.SchemaMapping;
@@ -20,17 +21,24 @@ public class VideoGraphQLController {
     private final ListVideoUseCase listVideoUseCase;
     private final SaveVideoUseCase saveVideoUseCase;
     private final GetVideoUseCase getVideoUseCase;
-    private final CategoryGateway categoryGateway;
+    private final GetCategoryById getCategoryById;
+    private final GetCastMemberById getCastMemberById;
+    private final GetGenreById getGenreById;
 
     public VideoGraphQLController(
             final ListVideoUseCase listVideoUseCase,
             final SaveVideoUseCase saveVideoUseCase,
             final GetVideoUseCase getVideoUseCase,
-            CategoryGateway categoryGateway) {
+            final GetCategoryById getCategoryById,
+            final GetCastMemberById getCastMemberById,
+            final GetGenreById getGenreById
+    ) {
         this.listVideoUseCase = Objects.requireNonNull(listVideoUseCase);
         this.saveVideoUseCase = Objects.requireNonNull(saveVideoUseCase);
         this.getVideoUseCase = Objects.requireNonNull(getVideoUseCase);
-        this.categoryGateway = categoryGateway;
+        this.getCategoryById = Objects.requireNonNull(getCategoryById);
+        this.getCastMemberById = Objects.requireNonNull(getCastMemberById);
+        this.getGenreById = Objects.requireNonNull(getGenreById);
     }
 
     @QueryMapping
@@ -56,11 +64,17 @@ public class VideoGraphQLController {
     }
 
     @SchemaMapping(typeName = "Video", field = "categories")
-    public List<ListCategoryOutput> categories(GetVideoUseCase.Output video) {
-        return video.categories()
-                .stream()
-                .flatMap(it -> this.categoryGateway.findById(it).stream())
-                .map(ListCategoryOutput::from)
-                .toList();
+    public List<GetCategoryById.Output> categories(GetVideoUseCase.Output video) {
+        return this.getCategoryById.execute(new GetCategoryById.Input(video.categories()));
+    }
+
+    @SchemaMapping(typeName = "Video", field = "castMembers")
+    public List<GetCastMemberById.Output> castMembers(GetVideoUseCase.Output video) {
+        return this.getCastMemberById.execute(new GetCastMemberById.Input(video.castMembers()));
+    }
+
+    @SchemaMapping(typeName = "Video", field = "genres")
+    public List<GetGenreById.Output> genres(GetVideoUseCase.Output video) {
+        return this.getGenreById.execute(new GetGenreById.Input(video.genres()));
     }
 }

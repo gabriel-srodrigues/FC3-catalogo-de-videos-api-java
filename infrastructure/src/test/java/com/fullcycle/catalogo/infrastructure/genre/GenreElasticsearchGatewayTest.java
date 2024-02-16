@@ -112,9 +112,13 @@ public class GenreElasticsearchGatewayTest extends AbstractElasticsearchTest {
         Assertions.assertTrue(this.genreRepository.existsById(expectedId));
 
         // when
-        final var actualOutput = this.genreGateway.findById(expectedId).get();
+        final var actualItems = this.genreGateway.findAllById(Set.of(expectedId));
 
         // then
+        Assertions.assertEquals(1, actualItems.size());
+
+        final var actualOutput = actualItems.get(0);
+
         Assertions.assertEquals(business.id(), actualOutput.id());
         Assertions.assertEquals(business.name(), actualOutput.name());
         Assertions.assertEquals(business.active(), actualOutput.active());
@@ -135,9 +139,13 @@ public class GenreElasticsearchGatewayTest extends AbstractElasticsearchTest {
         Assertions.assertTrue(this.genreRepository.existsById(expectedId));
 
         // when
-        final var actualOutput = this.genreGateway.findById(expectedId).get();
+        final var actualItems = this.genreGateway.findAllById(Set.of(expectedId));
 
         // then
+        Assertions.assertEquals(1, actualItems.size());
+
+        final var actualOutput = actualItems.get(0);
+
         Assertions.assertEquals(business.id(), actualOutput.id());
         Assertions.assertEquals(business.name(), actualOutput.name());
         Assertions.assertEquals(business.active(), actualOutput.active());
@@ -153,7 +161,7 @@ public class GenreElasticsearchGatewayTest extends AbstractElasticsearchTest {
         final var expectedId = "any";
 
         // when
-        final var actualOutput = this.genreGateway.findById(expectedId);
+        final var actualOutput = this.genreGateway.findAllById(Set.of(expectedId));
 
         // then
         Assertions.assertTrue(actualOutput.isEmpty());

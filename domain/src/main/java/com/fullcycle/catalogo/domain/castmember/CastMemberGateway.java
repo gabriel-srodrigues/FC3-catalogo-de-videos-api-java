@@ -2,7 +2,9 @@ package com.fullcycle.catalogo.domain.castmember;
 
 import com.fullcycle.catalogo.domain.pagination.Pagination;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public interface CastMemberGateway {
 
@@ -13,4 +15,6 @@ public interface CastMemberGateway {
     Optional<CastMember> findById(String anId);
 
     Pagination<CastMember> findAll(CastMemberSearchQuery aQuery);
+
+    List<CastMember> findAllById(Set<String> ids);
 }

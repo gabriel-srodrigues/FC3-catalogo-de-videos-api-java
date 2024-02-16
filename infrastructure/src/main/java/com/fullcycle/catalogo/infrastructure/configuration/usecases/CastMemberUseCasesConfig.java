@@ -1,6 +1,7 @@
 package com.fullcycle.catalogo.infrastructure.configuration.usecases;
 
 import com.fullcycle.catalogo.application.castmember.delete.DeleteCastMemberUseCase;
+import com.fullcycle.catalogo.application.castmember.get.GetCastMemberById;
 import com.fullcycle.catalogo.application.castmember.list.ListCastMemberUseCase;
 import com.fullcycle.catalogo.application.castmember.save.SaveCastMemberUseCase;
 import com.fullcycle.catalogo.domain.castmember.CastMemberGateway;
@@ -21,6 +22,11 @@ public class CastMemberUseCasesConfig {
     @Bean
     DeleteCastMemberUseCase deleteCastMemberUseCase() {
         return new DeleteCastMemberUseCase(castMemberGateway);
+    }
+
+    @Bean
+    GetCastMemberById getCastMemberById() {
+        return new GetCastMemberById(castMemberGateway);
     }
 
     @Bean

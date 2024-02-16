@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.testcontainers.shaded.org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
+import java.util.Set;
 
 public class CategoryElasticsearchGatewayTest extends AbstractElasticsearchTest {
 
@@ -76,7 +77,7 @@ public class CategoryElasticsearchGatewayTest extends AbstractElasticsearchTest 
     }
 
     @Test
-    public void givenValidId_whenCallsFindById_shouldRetrieveIt() {
+    public void givenValidId_whenCallsFindAllById_shouldRetrieveIt() {
         // given
         final var talks = Fixture.Categories.talks();
 
@@ -86,9 +87,13 @@ public class CategoryElasticsearchGatewayTest extends AbstractElasticsearchTest 
         Assertions.assertTrue(this.categoryRepository.existsById(expectedId));
 
         // when
-        final var actualOutput = this.categoryGateway.findById(expectedId).get();
+        final var actualItems = this.categoryGateway.findAllById(Set.of(expectedId));
 
         // then
+        Assertions.assertEquals(1, actualItems.size());
+
+        final var actualOutput = actualItems.get(0);
+
         Assertions.assertEquals(talks.id(), actualOutput.id());
         Assertions.assertEquals(talks.name(), actualOutput.name());
         Assertions.assertEquals(talks.description(), actualOutput.description());
@@ -104,7 +109,7 @@ public class CategoryElasticsearchGatewayTest extends AbstractElasticsearchTest 
         final var expectedId = "any";
 
         // when
-        final var actualOutput = this.categoryGateway.findById(expectedId);
+        final var actualOutput = this.categoryGateway.findAllById(Set.of(expectedId));
 
         // then
         Assertions.assertTrue(actualOutput.isEmpty());

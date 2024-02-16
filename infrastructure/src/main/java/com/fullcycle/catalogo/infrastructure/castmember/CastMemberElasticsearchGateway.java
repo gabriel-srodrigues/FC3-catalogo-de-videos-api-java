@@ -15,8 +15,11 @@ import org.springframework.data.elasticsearch.core.query.CriteriaQuery;
 import org.springframework.data.elasticsearch.core.query.Query;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.StreamSupport;
 
 import static org.springframework.data.elasticsearch.core.query.Criteria.where;
 
@@ -76,6 +79,13 @@ public class CastMemberElasticsearchGateway implements CastMemberGateway {
                 .toList();
 
         return new Pagination<>(currentPage, perPage, total, members);
+    }
+
+    @Override
+    public List<CastMember> findAllById(final Set<String> ids) {
+        return StreamSupport.stream(this.castMemberRepository.findAllById(ids).spliterator(), false)
+                .map(CastMemberDocument::toCastMember)
+                .toList();
     }
 
     private String buildSort(final String sort) {

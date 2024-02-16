@@ -104,6 +104,10 @@ public final class Fixture {
         public static CastMember leonan() {
             return CastMember.with(UUID.randomUUID().toString(), "Leonan FullCycle", CastMemberType.DIRECTOR, now(), now());
         }
+
+        public static CastMember luiz() {
+            return CastMember.with(UUID.randomUUID().toString(), "Luiz FullCycle", CastMemberType.DIRECTOR, now(), now());
+        }
     }
 
     public static final class Genres {

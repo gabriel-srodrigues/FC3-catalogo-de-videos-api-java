@@ -1,6 +1,7 @@
 package com.fullcycle.catalogo.infrastructure.configuration.usecases;
 
 import com.fullcycle.catalogo.application.video.delete.DeleteVideoUseCase;
+import com.fullcycle.catalogo.application.video.get.GetVideoUseCase;
 import com.fullcycle.catalogo.application.video.list.ListVideoUseCase;
 import com.fullcycle.catalogo.application.video.save.SaveVideoUseCase;
 import com.fullcycle.catalogo.domain.video.VideoGateway;
@@ -21,6 +22,11 @@ public class VideoUseCasesConfig {
     @Bean
     DeleteVideoUseCase deleteVideoUseCase() {
         return new DeleteVideoUseCase(videoGateway);
+    }
+
+    @Bean
+    GetVideoUseCase getVideoUseCase() {
+        return new GetVideoUseCase(videoGateway);
     }
 
     @Bean

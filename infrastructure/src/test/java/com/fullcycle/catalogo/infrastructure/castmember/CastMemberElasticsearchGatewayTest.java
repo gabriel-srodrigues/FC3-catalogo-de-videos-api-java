@@ -2,17 +2,19 @@ package com.fullcycle.catalogo.infrastructure.castmember;
 
 import com.fullcycle.catalogo.AbstractElasticsearchTest;
 import com.fullcycle.catalogo.domain.Fixture;
+import com.fullcycle.catalogo.domain.castmember.CastMember;
 import com.fullcycle.catalogo.domain.castmember.CastMemberSearchQuery;
-import com.fullcycle.catalogo.domain.category.CategorySearchQuery;
 import com.fullcycle.catalogo.infrastructure.castmember.persistence.CastMemberDocument;
 import com.fullcycle.catalogo.infrastructure.castmember.persistence.CastMemberRepository;
-import com.fullcycle.catalogo.infrastructure.category.persistence.CategoryDocument;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testcontainers.shaded.org.apache.commons.lang3.StringUtils;
+
+import java.util.List;
+import java.util.Set;
 
 class CastMemberElasticsearchGatewayTest extends AbstractElasticsearchTest {
 
@@ -104,6 +106,29 @@ class CastMemberElasticsearchGatewayTest extends AbstractElasticsearchTest {
 
         // then
         Assertions.assertTrue(actualOutput.isEmpty());
+    }
+
+    @Test
+    public void givenCastMembers_whenCallsFindAllById_shouldReturnEmptyList() {
+        // given
+        final var expectedItems = 2;
+
+        final var gabriel = this.castMemberRepository.save(CastMemberDocument.from(Fixture.CastMembers.gabriel()));
+        final var wesley = this.castMemberRepository.save(CastMemberDocument.from(Fixture.CastMembers.wesley()));
+
+        final var expectedIds = Set.of(gabriel.id(), wesley.id());
+
+        // when
+        final var actualOutput = this.castMemberGateway.findAllById(expectedIds);
+
+        // then
+        Assertions.assertEquals(expectedItems, actualOutput.size());
+        Assertions.assertTrue(
+                actualOutput.stream()
+                        .map(CastMember::id)
+                        .toList()
+                        .containsAll(expectedIds)
+        );
     }
 
     @Test

@@ -15,8 +15,10 @@ import org.springframework.data.elasticsearch.core.query.CriteriaQuery;
 import org.springframework.data.elasticsearch.core.query.Query;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
+import java.util.Set;
+import java.util.stream.StreamSupport;
 
 import static org.springframework.data.elasticsearch.core.query.Criteria.where;
 
@@ -49,12 +51,6 @@ public class CategoryElasticsearchGateway implements CategoryGateway {
     }
 
     @Override
-    public Optional<Category> findById(final String anId) {
-        return this.categoryRepository.findById(anId)
-                .map(CategoryDocument::toCategory);
-    }
-
-    @Override
     public Pagination<Category> findAll(final CategorySearchQuery aQuery) {
         final var terms = aQuery.terms();
         final var currentPage = aQuery.page();
@@ -83,6 +79,13 @@ public class CategoryElasticsearchGateway implements CategoryGateway {
                 .toList();
 
         return new Pagination<>(currentPage, perPage, total, categories);
+    }
+
+    @Override
+    public List<Category> findAllById(final Set<String> ids) {
+        return StreamSupport.stream(this.categoryRepository.findAllById(ids).spliterator(), false)
+                .map(CategoryDocument::toCategory)
+                .toList();
     }
 
     private String buildSort(final String sort) {
